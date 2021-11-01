@@ -1,20 +1,141 @@
+import dotenv from "dotenv";
 import express from "express";
-import path from "path";
+import { connectToDatabase } from "./services/database.service"
+import { favoritesRouter } from "./routes/favorites.router"
+
+
+dotenv.config();
+
+const port = process.env.SERVER_PORT;
+
 const app = express();
-const port = 8080; // default port to listen
+app.use(express.urlencoded({extended: true}));
+app.use(express.json());
 
-// Configure Express to use EJS
-app.set( "views", path.join( __dirname, "views" ) );
-app.set( "view engine", "ejs" );
+// app.set("views", path.join(__dirname, "views"));
+// app.set("view engine", "ejs");
 
-// define a route handler for the default home page
-app.get( "/", ( req, res ) => {
-    // render the index template
-    res.render( "index" );
-} );
+connectToDatabase()
+    .then(() => {
+        app.use("/favorites", favoritesRouter);
 
-// start the express server
-app.listen( port, () => {
-    // tslint:disable-next-line:no-console
-    console.log( `server started at http://localhost:${ port }` );
-} );
+        app.listen(port, () => {
+            console.log(`Server started at http://localhost:${port}`);
+        });
+    })
+    .catch((error: Error) => {
+        console.error("Database connection failed", error);
+        process.exit();
+    });
+
+
+
+
+// // interface favorites {
+// //     name: string;
+// //     price: number;
+// // }
+
+// interface FavoritesDocument {
+//     _id: number;
+//     [keys: string]: any
+
+//   }
+
+//   const uri = "mongodb+srv://testUser:testUser12345@testbase.tsex3.mongodb.net/myFirstDatabase?retryWrites=true&w=majority";
+//   const client = new MongoClient(uri);
+
+// // mongo db
+
+// async function main(){
+
+//        try {
+//         // Connect to the MongoDB cluster
+//         await client.connect();
+
+//         // Make the appropriate DB calls
+//         await  createListing(client, {
+//             _id: 1,
+//             name: "TestName1",
+//             price: 456,
+//         });
+
+//     } catch (e) {
+//         console.error(e);
+//     } finally {
+//         await client.close();
+//     }
+// }
+
+// main().catch(console.error);
+
+// async function listDatabases(client: MongoClient){
+//     const databasesList = await client.db().admin().listDatabases();
+
+//     console.log("Databases:");
+//     databasesList.databases.forEach(db => console.log(` - ${db.name}`));
+// };
+
+// async function createListing(client: MongoClient, newListing: FavoritesDocument){
+
+//     const result = await client.db("favorites_base").collection<FavoritesDocument>("favorites").insertOne(newListing);
+
+//     console.log(`New listing created with the following id: ${result.insertedId}`);
+
+// }
+
+
+
+// dotenv.config();
+
+// const port = process.env.SERVER_PORT;
+
+// const app = express();
+// app.use(express.urlencoded({extended: true}));
+// app.use(express.json());
+
+// app.set("views", path.join(__dirname, "views"));
+// app.set("view engine", "ejs");
+
+
+// app.get("/", (req: express.Request, res: express.Response) => {
+//     res.send('server say Hello')
+// });
+
+// app.get("/favorites/:id", (req: express.Request, res: express.Response) => {
+//     const id = req.params.id
+//     res.send(`You get favorites by id = ${id}`)
+// })
+
+// app.get("/favorites", (req: express.Request, res: express.Response) => {
+//     try {
+//         const result = (await client.db("favorites_base").collection<FavoritesDocument>.find({}))
+//         res.status(200).send(result)
+//     }
+//     catch(error) {
+//         res.status(500).send(error.message)
+//     }
+//     // res.send('You get all favorites')
+//     })
+
+// app.post('/favorites', (req: express.Request, res: express.Response) => {
+//     if (!req.body) return res.sendStatus(400)
+//   console.log(req.body)
+//   res.send(`Got a POST request `)
+// //   res.send(req.body)
+// })
+
+// app.put("/favorites/:id", (req: express.Request, res: express.Response) => {
+//     const id = req.params.id
+//     res.send('Got a PUT request')
+// })
+
+// app.delete("/favorites/:id", (req: express.Request, res: express.Response) => {
+//     const id = req.params.id
+//     res.send('Got a Delete request')
+// })
+
+// // start the express server
+// app.listen(port, () => {
+//     console.log(`server started at http://localhost:${port}`);
+// });
