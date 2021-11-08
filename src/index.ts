@@ -6,7 +6,7 @@ import { favoritesRouter } from "./routes/favorites.router"
 
 dotenv.config();
 
-const port = process.env.SERVER_PORT || process.env.PORT;
+const PORT = process.env.PORT || 8080;
 
 const app = express();
 app.use(express.urlencoded({extended: true}));
@@ -19,7 +19,7 @@ connectToDatabase()
     .then(() => {
         app.use("/favorites", favoritesRouter);
 
-        app.listen(port, () => {
+        app.listen(PORT, () => {
             console.log(`Server started at http://localhost:${port}`);
         });
     })
