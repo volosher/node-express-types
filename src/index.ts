@@ -6,7 +6,7 @@ import { favoritesRouter } from "./routes/favorites.router"
 
 dotenv.config();
 
-const port = process.env.SERVER_PORT;
+const port = process.env.SERVER_PORT || process.env.PORT;
 
 const app = express();
 app.use(express.urlencoded({extended: true}));
