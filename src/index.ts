@@ -20,7 +20,7 @@ connectToDatabase()
         app.use("/favorites", favoritesRouter);
 
         app.listen(PORT, () => {
-            console.log(`Server started at http://localhost:${port}`);
+            console.log(`Server started at http://localhost:${PORT}`);
         });
     })
     .catch((error: Error) => {
